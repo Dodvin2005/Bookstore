@@ -1,5 +1,7 @@
 import React from 'react'
+import { BsCollectionFill } from 'react-icons/bs'
 import { FaDatabase } from 'react-icons/fa'
+import { IoMdSettings } from 'react-icons/io'
 import { Link } from 'react-router-dom'
 
 function AdminSidebar() {
@@ -17,10 +19,10 @@ function AdminSidebar() {
         <Link to={'/admin'} className='flex items-center'><FaDatabase className='me-2' />Dashboard</Link>
       </div>
        <div className="mt-3">
-        <Link to={'/admin/resources'} className='flex items-center'><FaDatabase className='me-2' />Collections</Link>
+        <Link to={'/adminresources'} className='flex items-center'><BsCollectionFill className='me-2' />Collections</Link>
       </div>
        <div className="mt-3">
-        <Link to={'/admin/settings'} className='flex items-center'><FaDatabase className='me-2' />Settings</Link>
+        <Link to={'/adminsettings'} className='flex items-center'><IoMdSettings className='me-2' />Settings</Link>
       </div>
     </div>
     </div>
