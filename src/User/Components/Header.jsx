@@ -108,8 +108,7 @@ function Header() {
               <Link
                 to="/books"
                 onClick={() => setToggle(false)}
-                className="block py-2 px-5 hover:bg-white hover:text-black rounded transition duration-300"
-              >
+                className="block py-2 px-5 hover:bg-white hover:text-black rounded transition duration-300">
                 Books
               </Link>
 
