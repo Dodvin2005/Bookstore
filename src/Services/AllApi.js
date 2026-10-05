@@ -4,3 +4,8 @@
     export const registerAPI = async(userData)=>{
         return await ApiService("POST","/register",userData)
     }
+
+    // login
+ export const loginAPI = async(userData)=>{
+        return await ApiService("POST","/login",userData)
+    }

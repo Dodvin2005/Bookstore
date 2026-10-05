@@ -24,7 +24,7 @@ AxiosInstance.interceptors.response.use(
                 console.log("server error");
             } else if (error.request) {
                 console.log("No response from server");
-
+                return error.request.response 
             } else {
                 console.log(`Error: ${error.message}`);
 

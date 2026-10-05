@@ -11,7 +11,7 @@ const ApiService = async(httpMethod,url,reqBody,reqHeader)=>{
         const response = await AxiosInstance(reqConfig)
         return response
     }catch(err){
-        throw err
+        return err
     }
 }
 export default ApiService
