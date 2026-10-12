@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../Components/Header'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import Edit from '../Components/Edit'
@@ -9,12 +9,31 @@ import Purchased from '../Components/Purchased'
 function Profile() {
 
   const [currentPage, setCurrentPage] = useState(1)
+    const [username, setUsername] = useState("")
+  const [dp, setDp] = useState("")
+  const [bio,setBio] = useState("")
+
+    const token = sessionStorage.getItem("token")
+
+
+  useEffect(() => {
+      if (sessionStorage.getItem("token") && sessionStorage.getItem("user")) {
+        const user = JSON.parse(sessionStorage.getItem("user"))
+        setDp(user?.picture)
+        setBio(user?.bio)
+        setUsername(user?.username)
+
+        
+      }
+    }, [token])
+    // console.log(userId);
+
   return (
     <>
       <Header />
       <div style={{ height: '200px' }} className='bg-gray-900'></div>
       <div style={{ width: '230px', height: '230px', borderRadius: '50%', marginTop: '-130px', marginLeft: '70px' }} className='bg-white p-3'>
-        <img style={{ width: '200px', height: '200px', borderRadius: '50%' }} src="https://www.mimembers.au/api/Website/DownloadFile?FileGuid=abebcd8a-5dbe-4c1b-8614-9d512a1f4c8f#EXT=.jpg" alt="user" />
+        <img style={{ width: '200px', height: '200px', borderRadius: '50%' }} src={dp == "" ? "https://static.vecteezy.com/system/resources/previews/020/526/176/large_2x/3d-user-login-or-verification-icon-human-symbol-mobile-ui-ux-app-icons-vector.jpg" : dp.startsWith("")?dp :`${AxiosInstance.defaults.baseURL}/uploads/${dp}`} alt="user " />
 
       </div>
       <div className="md:flex justify-between px-5">

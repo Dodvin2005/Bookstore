@@ -3,8 +3,10 @@ import React, { useState } from 'react'
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
-import { loginAPI, registerAPI } from '../Services/AllApi'
-  import { ToastContainer, toast } from 'react-toastify';
+import { googleLoginAPI, loginAPI, registerAPI } from '../Services/AllApi'
+import { ToastContainer, toast } from 'react-toastify';
+import { GoogleLogin } from '@react-oauth/google'
+import { jwtDecode } from 'jwt-decode'
 
 
 function Auth({ insideRegister }) {
@@ -24,14 +26,14 @@ function Auth({ insideRegister }) {
       password: Yup.string().required("Required"),
 
     }),
-    onSubmit: (values,resetForm) => {
+    onSubmit: (values, resetForm) => {
       console.log(values);
-     
-      if(insideRegister){
+
+      if (insideRegister) {
         console.log("Register API call");
         handleRegister(values)
-        
-      }else{
+
+      } else {
         console.log("Login API call");
         handleLogin(values)
       }
@@ -40,36 +42,56 @@ function Auth({ insideRegister }) {
   })
 
 
-const handleLogin = async (userData)=>{
-  const result = await loginAPI(userData)
-  console.log(result);
-  if(result.status==200){
-    toast.success("Successfully logged in...!!!")
-    sessionStorage.setItem("token",result.data.token)
-    sessionStorage.setItem("user",JSON.stringify(result.data.user))
-   setTimeout(()=>{
-     if(result.data.user.role == "admin"){
-      Navigate('/admin')
-    }else{
-      Navigate('/')
+  const handleLogin = async (userData) => {
+    const result = await loginAPI(userData)
+    console.log(result);
+    if (result.status == 200) {
+      toast.success("Successfully logged in...!!!")
+      sessionStorage.setItem("token", result.data.token)
+      sessionStorage.setItem("user", JSON.stringify(result.data.user))
+      setTimeout(() => {
+        if (result.data.user.role == "admin") {
+          Navigate('/admin')
+        } else {
+          Navigate('/')
+        }
+      }, 2500)
+    } else {
+      toast.error(result)
     }
-   },2500)
-  }else{
-    toast.error(result)
-  }
-  
-}
 
-  const handleRegister = async(userData)=>{
+  }
+
+  const handleGoogleLogin = async (credentialResponse) => {
+    console.log("Inside google login");
+    const { email, picture, name } = jwtDecode(credentialResponse.credential)
+    console.log(email, picture, name);
+    // Api call
+    const result = await googleLoginAPI({ username: name, email, password: "googlePassword", picture })
+    if (result.status == 200) {
+      toast.success("Login Successfull...!!!")
+      sessionStorage.setItem("token", result.data.token)
+      sessionStorage.setItem("user", JSON.stringify(result.data.user))
+      setTimeout(() => {
+        if (result.data.user.role == "admin") {
+          Navigate('/admin')
+        } else {
+          Navigate('/')
+        }
+      }, 2500)
+    }
+  }
+
+  const handleRegister = async (userData) => {
     const result = await registerAPI(userData)
     console.log(result);
-    if(result.status==201){
+    if (result.status == 201) {
       toast.success("Successfully Registered.. Please Login!!")
-    }else{
+    } else {
       toast.error(result)
-     
+
     }
-     Navigate=('/login')
+    Navigate = ('/login')
   }
 
 
@@ -110,7 +132,7 @@ const handleLogin = async (userData)=>{
 
             {
               toggle ?
-                <FaEyeSlash  onClick={() => setToggle(!toggle)} className='text-gray-400 cursor-pointer' style={{ marginTop: '-50px', marginLeft: '380px' }} />
+                <FaEyeSlash onClick={() => setToggle(!toggle)} className='text-gray-400 cursor-pointer' style={{ marginTop: '-50px', marginLeft: '380px' }} />
                 :
                 <FaEye onClick={() => setToggle(!toggle)} className='text-gray-400 cursor-pointer' style={{ marginTop: '-50px', marginLeft: '380px' }} />
             }
@@ -120,7 +142,7 @@ const handleLogin = async (userData)=>{
               <p className="text-xs text-orange-300">Never Share your password</p>
               {
                 !insideRegister &&
-                <button  className='text-xs underline'>Forgot password</button>
+                <button className='text-xs underline'>Forgot password</button>
               }
             </div>
 
@@ -143,7 +165,15 @@ const handleLogin = async (userData)=>{
               !insideRegister &&
               <div className="my-5 text-center">
                 --------------OR-------------
-                <div className='my-2 flex justify-center items-center w-full'>google Authentication
+                <div className='my-2 flex justify-center items-center w-full'>
+                  <GoogleLogin
+                    onSuccess={credentialResponse => {
+                      handleGoogleLogin(credentialResponse)
+                    }}
+                    onError={() => {
+                      console.log('Login Failed');
+                    }}
+                  />
 
                 </div>
               </div>
@@ -165,7 +195,7 @@ const handleLogin = async (userData)=>{
         </div>
       </div>
 
-<ToastContainer position='top-center' theme='colored' autoClose={3000} />
+      <ToastContainer position='top-center' theme='colored' autoClose={3000} />
 
     </div>
   )

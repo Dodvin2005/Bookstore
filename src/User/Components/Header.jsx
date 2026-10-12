@@ -1,12 +1,35 @@
-import React, { useState } from 'react'
-import { FaFacebook, FaInstagram } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react'
+import { FaFacebook, FaInstagram, FaPowerOff } from 'react-icons/fa'
 import { FiTwitter } from 'react-icons/fi'
-import { IoMdLogIn, IoMdMenu, IoMdClose } from 'react-icons/io'
+import { IoMdLogIn, IoMdMenu, IoMdClose, IoMdSettings } from 'react-icons/io'
 import { Link } from 'react-router-dom'
+import AxiosInstance from '../../Api/AxiosInstance'
+
 
 function Header() {
 
   const [toggle, setToggle] = useState(false)
+
+
+  // keeping token
+  const [token, setToken] = useState("")
+  const [dp, setDp] = useState("")
+  const [userId, setUserId] = useState("")
+  const [dropDown, setDropDown] = useState(false)
+
+
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token") && sessionStorage.getItem("user")) {
+      const userToken = sessionStorage.getItem("token")
+      const user = JSON.parse(sessionStorage.getItem("user"))
+      setToken(userToken)
+      setDp(user.picture)
+      setUserId(user._id)
+    }
+  }, [token])
+  console.log(userId);
+
 
   return (
     <>
@@ -16,9 +39,9 @@ function Header() {
         {/* Logo */}
         <div className="flex items-center">
 
-          <img width="50px" height="50px"className="rounded-full object-cover shadow"
+          <img width="50px" height="50px" className="rounded-full object-cover shadow"
             src="https://static.vecteezy.com/system/resources/previews/021/644/208/large_2x/books-stacked-on-top-of-each-other-created-with-generative-ai-photo.jpg"
-            alt="books"/>
+            alt="books" />
 
         </div>
 
@@ -48,10 +71,29 @@ function Header() {
             className="text-xl cursor-pointer hover:scale-125 transition duration-300"
           />
 
-          <Link to="/login" className="border border-black rounded px-3 py-1 ms-3 flex items-center gap-1 hover:bg-black hover:text-white transition duration-300"  >
-            <IoMdLogIn />
-            Login
-          </Link>
+          {/* login link */}
+          {
+            !token ?
+              <Link to="/login" className="border border-black rounded px-3 py-1 ms-3 flex items-center gap-1 hover:bg-black hover:text-white transition duration-300"  >
+                <IoMdLogIn />
+                Login
+              </Link>
+              :
+              <div>
+                <button onClick={() => setDropDown(!dropDown)} className='shadow-sm rounded p-1 hover:bg-gray-100'>
+                  <img width={'40px'} height={'40px'} style={{ borderRadius: '50%' }} src={dp == "" ? "https://static.vecteezy.com/system/resources/previews/020/526/176/large_2x/3d-user-login-or-verification-icon-human-symbol-mobile-ui-ux-app-icons-vector.jpg" : dp.startsWith("") ? dp : `${AxiosInstance.defaults.baseURL}/uploads/${dp}`} alt="profile Icon" />
+                </button>
+                {/* drop down */}
+                {
+                  dropDown &&
+                  <div className="absolute right-0 z-10 mt-2 w-40 bg-white shadow rounded ring-1 ring-black/5 p-2 focus:outline-hidden">
+                    <Link to={`/profile/${userId}`} className='flex items-center text-gray-600 text-sm px-3 py-2'><IoMdSettings className='me-1' /> Profile</Link>
+                    <button className='flex items-center text-gray-600 text-sm px-3 py-2'><FaPowerOff className='me-1' /> Logout</button>
+
+                  </div>
+                }
+              </div>
+          }
 
         </div>
 
@@ -69,18 +111,32 @@ function Header() {
             {/* Menu Button */}
             <button onClick={() => setToggle(!toggle)} className="text-2xl hover:text-gray-300 transition duration-300" >
 
-              {toggle ? <IoMdClose /> : <IoMdMenu />}
 
             </button>
 
 
             {/* Mobile Login */}
-            <Link to="/login" className="border border-white rounded px-3 py-1 flex items-center gap-1 hover:bg-white hover:text-black transition duration-300" >
+            {
+              !token ?
+              <Link to="/login" className="border border-white rounded px-3 py-1 flex items-center gap-1 hover:bg-white hover:text-black transition duration-300" >
+               <IoMdLogIn />
+                Login </Link>
+                :
+                <div>
+                <button onClick={() => setDropDown(!dropDown)} className='shadow-sm rounded p-1 hover:bg-gray-100'>
+                  <img width={'40px'} height={'40px'} style={{ borderRadius: '50%' }} src={dp == "" ? "https://static.vecteezy.com/system/resources/previews/020/526/176/large_2x/3d-user-login-or-verification-icon-human-symbol-mobile-ui-ux-app-icons-vector.jpg" : dp.startsWith("https://lh3.googleusercontent.com/") ? dp : `${AxiosInstance.defaults.baseURL}/uploads/${dp}`} alt="profile Icon" />
+                </button>
+                {/* drop down */}
+                {
+                  dropDown &&
+                  <div className="absolute right-0 z-10 mt-2 w-40 bg-white shadow rounded ring-1 ring-black/5 p-2 focus:outline-hidden">
+                    <Link to={`/profile/${userId}`} className='flex items-center text-gray-600 text-sm px-3 py-2'><IoMdSettings className='me-1' /> Profile</Link>
+                    <button className='flex items-center text-gray-600 text-sm px-3 py-2'><FaPowerOff className='me-1' /> Logout</button>
 
-              <IoMdLogIn />
-              Login
-
-            </Link>
+                  </div>
+                }
+              </div>
+            }
 
           </div>
 
