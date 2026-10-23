@@ -4,12 +4,15 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import ShareContext from './contextAPI/ShareContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
    <BrowserRouter> 
    <GoogleOAuthProvider clientId='912406937408-o8a6jal50e4a809l1krir4l1g3pd30nq.apps.googleusercontent.com'>
-    <App />
+    <ShareContext>
+      <App />
+      </ShareContext>
     </GoogleOAuthProvider>
    </BrowserRouter>
   </StrictMode>,

@@ -3,9 +3,13 @@ import { FaRegEdit } from 'react-icons/fa'
 import { IoMdCloseCircleOutline } from 'react-icons/io'
 import { TiEdit } from 'react-icons/ti'
 import { ToastContainer, toast } from 'react-toastify';
+import {userUpdateAPI} from '../../Services/AllApi';
+import {  useNavigate } from 'react-router-dom'
+
 
 
 function Edit() {
+    const navigate = useNavigate();
     const [offCanvas, setOffCanvas] = useState(false)
     const [userDetails, setUserDetails] = useState({
         username: "", password: "", cPassword: "", bio: "", picture: "", role: "", id: ""
@@ -57,6 +61,35 @@ function Edit() {
             setPreview("")
             setImageFile(false)
             setPasswordMatch(true)
+    }
+
+    const handleUpdateUser = async ()=>{
+        const{username,password,cPassword,bio,picture,id} = userDetails
+        if(!username || !password || !cPassword || !bio){
+            toast.info("please fill th form completely")
+
+        }else if(passwordMatch){
+            const reqBody = new FormData()
+            for(let key in userDetails){
+                if(key != picture){
+                    reqBody.append(key,userDetails[key])
+                }else{
+                    preview ? reqBody.append("picture",picture) : reqBody.append("picture",existingPicture)
+                }
+            }
+
+            // api call
+            const result = await userUpdateAPI(id,reqBody)
+            console.log(result);
+            if(result.status == 200){
+                toast.success("user Profile updated successfully!!!Please login")
+                setTimeout(()=>{
+                    sessionStorage.clear()
+                    navigate('/login')
+                },2000)
+            }
+            
+        }
     }
 
     return (
@@ -126,7 +159,7 @@ function Edit() {
                             {/* reset and update buttons */}
                             <div className="flex justify-end w-full px-5 mt-5">
                                 <button onClick={resetProfile} className='bg-yellow-500 text-white p-3 rounded me-2'>Reset</button>
-                                <button className='bg-green-500 text-white p-3 rounded me-2'>Update</button>
+                                <button onClick={handleUpdateUser} className='bg-green-500 text-white p-3 rounded me-2'>Update</button>
 
                             </div>
 
