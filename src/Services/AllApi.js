@@ -54,3 +54,8 @@ export const deleteUserBookAPI = async (bookId) => {
 export const viewBookAPI = async (id) => {
     return await ApiService("GET", `/view-book/${id}`,{})
 }
+
+// buy book
+export const buyBookAPI = async (id) => {
+    return await ApiService("PUT", `/books/${id}/buy`,{})
+}

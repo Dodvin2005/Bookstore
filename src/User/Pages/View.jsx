@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import Header from '../Components/Header'
 import { FaCamera, FaEye, FaFastBackward } from 'react-icons/fa'
 import { Link, useParams } from 'react-router-dom'
-import { viewBookAPI } from '../../Services/AllApi'
+import { buyBookAPI, viewBookAPI } from '../../Services/AllApi'
 import AxiosInstance from '../../Api/AxiosInstance'
+import {loadStripe} from '@stripe/stripe-js';
+
 
 function View() {
   const [modal,setModal] = useState(false)
@@ -22,6 +24,16 @@ function View() {
       setBookDetails(result.data)
     }
 
+    const makePayment = async ()=>{
+      console.log(import.meta.env.VITE_STRIPE_PK);
+      
+      // load stripe
+      const stripe = await loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
+      console.log(stripe);
+      // api call
+      const result = await buyBookAPI(id)
+
+    }
 
   return (
     <>
