@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
 import { ToastContainer,toast} from 'react-toastify';
+import { addBookAPI } from '../../Services/AllApi';
 
 
 function UploadBook() {
@@ -32,27 +33,36 @@ function UploadBook() {
 
     }
 
-    const handleAddBook = async()=>{
-        const { title, author, imageURL, pages, price, discountPrice, abstract, publisher, isbn, language, category, uploadImages } = bookDetails
-        if(!title || !author || !imageURL || !pages || !price || !discountPrice || !abstract || !publisher || !isbn || !language || !category || uploadImages.length==0 ){
-            toast.info("please fill the form completely")
-        }else{
-            // api call
-           const reqBody = new FormData()
-           for(let key in bookDetails){
-            if(key != "uploadImages"){
-                reqBody.append(key,bookDetails[key])
+  const handleAddBook = async () => {
+    const { title, author, imageURL, pages, price, discountPrice, abstract, publisher, isbn, language, category, uploadImages } = bookDetails
 
-            }else{
-                bookDetails.uploadImages.forEach(imageFile=>{
-                    reqBody.append("uploadImages",imageFile)
+    if (!title || !author || !imageURL || !pages || !price || !discountPrice || !abstract || !publisher || !isbn || !language || !category || uploadImages.length == 0) {
+        toast.info("Please fill the form completely")
+    } else {
+        // API call
+        const reqBody = new FormData()
+
+        for (let key in bookDetails) {
+            if (key != "uploadImages") {
+                reqBody.append(key, bookDetails[key])
+            } else {
+                bookDetails.uploadImages.forEach(imageFile => {
+                    reqBody.append("uploadImages", imageFile)
                 })
             }
-           }
+        }
 
+        // Call add book API
+        const result = await addBookAPI(reqBody)
+
+        if (result.status == 200 || result.status == 201) {
+            toast.success("Book added successfully")
+            handleReset()
+        } else {
+            toast.error("Failed to add book")
         }
     }
-
+}
     return (
         <div className='p-10 my-20 mx-5 bg-blue-100 rounded-2xl'>
             <h1 className="text-center text-3xl font-medium">Upload Book Details</h1>

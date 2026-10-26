@@ -38,7 +38,7 @@ function Profile() {
       </div>
       <div className="md:flex justify-between px-5">
         <div className="flex items-center">
-          <h1 className="text-2xl font-black md:text-3xl ">Username</h1>
+          <h1 className="text-2xl font-black md:text-3xl ">{setUsername}</h1>
           <FaRegCheckCircle className="text-blue-700 ms-3" />
         </div>
         <div>

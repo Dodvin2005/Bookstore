@@ -1,11 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AdminSidebar from '../Components/AdminSidebar'
 import AdminHeader from '../Components/AdminHeader'
+import { UserListAPI } from '../../Services/AllApi'
+import AxiosInstance from '../../Api/AxiosInstance'
 
 function AdminResources() {
 
   const [currentPage, setCurrentPage] = useState(1)
+const [allUsers,setAllUsers] = useState([])
+console.log(allUsers)
 
+useEffect(()=>{
+  if(currentPage==2){
+    getAllUsers()
+  }
+},[currentPage])
+
+
+const getAllUsers = async ()=>{
+  const result = await UserListAPI()
+  if(result.status==200){
+    setAllUsers(result.data)
+  }
+}
 
   return (
     <div>
@@ -43,10 +60,13 @@ function AdminResources() {
           <div>
              <div className="md:grid grid-cols-3 my-5 w-full">
                 {/* duplicate according to users */}
-                <div className="shadow rounded p-3 m-2 bg-blue-100 border">
+                {
+                  allUsers.length>0 ?
+                  allUsers?.map(user=>{
+                    <div className="shadow rounded p-3 m-2 bg-blue-100 border">
                   <p className="text-red-500 font-bold text-md">ID:</p>
                   <div className="flex mt-3 items-center">
-                    <img width={'80px'} height={'80px'} style={{borderRadius:'50%'}} src="https://tse2.mm.bing.net/th/id/OIP.h-pQ2ym5qcjIRlbsC-V5QQHaG-?r=0&pid=Api&P=0&h=180" alt="" />
+                    <img width={'80px'} height={'80px'} style={{borderRadius:'50%'}} src={user ?.picture==""? "https://static.vecteezy.com/system/resources/previews/020/526/176/large_2x/3d-user-login-or-verification-icon-human-symbol-mobile-ui-ux-app-icons-vector.jpg" : dp.startsWith("https://lh3.googleusercontent.com/")?user?.picture :`${AxiosInstance.defaults.baseURL}/uploads/${dp}`} alt="user " />
                   <div className="flex flex-col ml-3 w-full">
                     <h4 className="text-blue-400 font-bold text-md">Username</h4>
                     <p className="text-xs">Mail</p>
@@ -55,6 +75,12 @@ function AdminResources() {
                   
                   
                 </div>
+                  })
+                  :
+                  <div></div>
+                }
+                
+
               </div>
           </div>
           }

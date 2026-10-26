@@ -32,6 +32,8 @@ function View() {
       console.log(stripe);
       // api call
       const result = await buyBookAPI(id)
+      // console.log(result.data.checkOutURL)
+      window.location.href = result.data.checkOutURL
 
     }
 

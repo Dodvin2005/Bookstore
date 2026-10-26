@@ -117,7 +117,8 @@ function Edit() {
                                     type="file"
                                     id="userProfile"
                                     hidden
-                                />                                {
+                                />                              
+                                  {
                                     existingPicture == "" ?
                                         <img style={{ height: '100px', width: '100px', borderRadius: '50%' }} className='flex items-center justify-center mx-25' src={preview ? preview : "https://static.vecteezy.com/system/resources/thumbnails/050/758/789/small_2x/user-icon-on-transparent-background-free-png.png"} alt="user" />
                                         :

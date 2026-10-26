@@ -1,17 +1,22 @@
 import AxiosInstance from "./AxiosInstance";
 
-const ApiService = async(httpMethod,url,reqBody,reqHeader)=>{
+const ApiService = async (httpMethod, url, reqBody, reqHeader) => {
+
     const reqConfig = {
-        method:httpMethod,
+        method: httpMethod,
         url,
-        data:reqBody,
-        headers:reqHeader
+        data: reqBody,
+        headers: reqHeader
     }
-    try{
+
+    try {
         const response = await AxiosInstance(reqConfig)
         return response
-    }catch(err){
-        return err
+
+    } catch (err) {
+        console.log("API Error:", err.response?.data || err.message)
+        throw err
     }
 }
+
 export default ApiService
