@@ -68,3 +68,7 @@ export const adminUpdateAPI = async (adminId,adminData) => {
 export const UserListAPI = async () => {
     return await ApiService("GET", `/user-list`,{})
 }
+
+export const editBookStatusAPI = async (id) => {
+    return await ApiService("PUT", `/books/${id}`,{})
+}

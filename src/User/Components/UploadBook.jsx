@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
 import { ToastContainer,toast} from 'react-toastify';
 import { addBookAPI } from '../../Services/AllApi';
+import useDebounce from '../../Hooks/UseDebounce';
+
 
 
 function UploadBook() {
@@ -12,6 +14,15 @@ function UploadBook() {
     const [preview,setPreview] = useState("")
     const [previewList,setPreviewList] = useState([])
     console.log(bookDetails);
+    const debounceTitleSearch = useDebounce(bookDetails,2000)
+
+    useEffect(()=>{
+        if(debounceTitleSearch){
+            console.log("API CALL");
+            
+        }
+    },[debounceTitleSearch])
+
 
     const handleUploadImages = (e)=>{
         const imageFile = e.target.files[0]

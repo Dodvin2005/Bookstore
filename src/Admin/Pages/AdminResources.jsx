@@ -1,28 +1,48 @@
 import React, { useEffect, useState } from 'react'
 import AdminSidebar from '../Components/AdminSidebar'
 import AdminHeader from '../Components/AdminHeader'
-import { UserListAPI } from '../../Services/AllApi'
+import { editBookStatusAPI, UserListAPI } from '../../Services/AllApi'
 import AxiosInstance from '../../Api/AxiosInstance'
+import { toast } from 'react-toastify'
 
 function AdminResources() {
 
   const [currentPage, setCurrentPage] = useState(1)
-const [allUsers,setAllUsers] = useState([])
-console.log(allUsers)
+  const [allUsers, setAllUsers] = useState([])
+  const [allBooks, setAllBooks] = useState([])
 
-useEffect(()=>{
-  if(currentPage==2){
-    getAllUsers()
+  console.log(allBooks)
+
+  useEffect(() => {
+    if (currentPage == 2) {
+      getAllUsers()
+    } else {
+      getAllBooks()
+    }
+  }, [currentPage])
+
+
+  const getAllUsers = async () => {
+    const result = await UserListAPI()
+    if (result.status == 200) {
+      setAllUsers(result.data)
+    }
   }
-},[currentPage])
 
-
-const getAllUsers = async ()=>{
-  const result = await UserListAPI()
+  const getAllBooks = async () => {
+    const result = await bookListAPI()
+    if (result.status == 200) {
+      setAllBooks(result.data)
+    }
+  }
+ 
+  const updateBookStatus = async (id)=>{
+  const result = await editBookStatusAPI(id)
   if(result.status==200){
-    setAllUsers(result.data)
+    toast.success("Book Approved Successfully")
+    getAllBooks()
   }
-}
+  }
 
   return (
     <div>
@@ -43,46 +63,60 @@ const getAllUsers = async ()=>{
             currentPage == 1 &&
             <div className="md:grid grid-cols-4 md:my-0">
               {/* duplicate cards */}
-              <div className="shadow rounded p-3 m-4 md:my-0">
-                <img width={'100%'} height={'300px'} src="https://tse2.mm.bing.net/th/id/OIP.h-pQ2ym5qcjIRlbsC-V5QQHaG-?r=0&pid=Api&P=0&h=180" alt="" />
-                <div className="flex flex-col justify-center items-center mt-4">
-                  <h2 className="text-blue-600 font-bold text-xl">Author</h2>
-                  <h3 className="text-lg">Title</h3>
-                  <p className="font-bold text-red-500">Price</p>
-                  {/* approve button */}
-                  <button className="bg-green-500 text-white p-2 mt-2 w-full">APPROVE</button>
-                </div>
-              </div>
+              {
+                allBooks.length > 0 ?
+                  allBooks?.map(book => {
+                    <div className="shadow rounded p-3 m-4 md:my-0">
+                      <img width={'100%'} height={'300px'} src="https://tse2.mm.bing.net/th/id/OIP.h-pQ2ym5qcjIRlbsC-V5QQHaG-?r=0&pid=Api&P=0&h=180" alt="" />
+                      <div className="flex flex-col justify-center items-center mt-4">
+                        <h2 className="text-blue-600 font-bold text-xl">Author</h2>
+                        <h3 className="text-lg">Title</h3>
+                        <p className="font-bold text-red-500">Price</p>
+                        {/* approve button */}
+                        {
+                          book?.status == "pending" ?
+                            <button onClick={()=>updateBookStatus(book?._id)} className="bg-green-500 text-white p-2 mt-2 w-full">APPROVE</button>
+
+                            :
+                            <img width={'50%'} className='mt-2' src="https://static.vecteezy.com/system/resources/previews/025/210/758/original/check-mark-icon-transparent-background-checkmark-icon-approved-symbol-confirmation-sign-design-elements-checklist-positive-thinking-sign-correct-answer-verified-badge-flat-icon-png.png" alt="approved" />
+
+                        }
+                      </div>
+                    </div>
+                  })
+                  :
+                  <div>Sorry!! No Books added Yet</div>
+              }
             </div>
           }
           {
             currentPage == 2 &&
-          <div>
-             <div className="md:grid grid-cols-3 my-5 w-full">
+            <div>
+              <div className="md:grid grid-cols-3 my-5 w-full">
                 {/* duplicate according to users */}
                 {
-                  allUsers.length>0 ?
-                  allUsers?.map(user=>{
-                    <div className="shadow rounded p-3 m-2 bg-blue-100 border">
-                  <p className="text-red-500 font-bold text-md">ID:</p>
-                  <div className="flex mt-3 items-center">
-                    <img width={'80px'} height={'80px'} style={{borderRadius:'50%'}} src={user ?.picture==""? "https://static.vecteezy.com/system/resources/previews/020/526/176/large_2x/3d-user-login-or-verification-icon-human-symbol-mobile-ui-ux-app-icons-vector.jpg" : dp.startsWith("https://lh3.googleusercontent.com/")?user?.picture :`${AxiosInstance.defaults.baseURL}/uploads/${dp}`} alt="user " />
-                  <div className="flex flex-col ml-3 w-full">
-                    <h4 className="text-blue-400 font-bold text-md">Username</h4>
-                    <p className="text-xs">Mail</p>
-                  </div>
-                  </div>
-                  
-                  
-                </div>
-                  })
-                  :
-                  <div></div>
+                  allUsers.length > 0 ?
+                    allUsers?.map(user => {
+                      <div className="shadow rounded p-3 m-2 bg-blue-100 border">
+                        <p className="text-red-500 font-bold text-md">ID:</p>
+                        <div className="flex mt-3 items-center">
+                          <img width={'80px'} height={'80px'} style={{ borderRadius: '50%' }} src={user?.picture == "" ? "https://static.vecteezy.com/system/resources/previews/020/526/176/large_2x/3d-user-login-or-verification-icon-human-symbol-mobile-ui-ux-app-icons-vector.jpg" : dp.startsWith("https://lh3.googleusercontent.com/") ? user?.picture : `${AxiosInstance.defaults.baseURL}/uploads/${dp}`} alt="user " />
+                          <div className="flex flex-col ml-3 w-full">
+                            <h4 className="text-blue-400 font-bold text-md">Username</h4>
+                            <p className="text-xs">Mail</p>
+                          </div>
+                        </div>
+
+
+                      </div>
+                    })
+                    :
+                    <div></div>
                 }
-                
+
 
               </div>
-          </div>
+            </div>
           }
         </div>
 

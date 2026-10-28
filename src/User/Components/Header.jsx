@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaFacebook, FaInstagram, FaPowerOff } from 'react-icons/fa'
 import { FiTwitter } from 'react-icons/fi'
 import { IoMdLogIn, IoMdMenu, IoMdClose, IoMdSettings } from 'react-icons/io'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AxiosInstance from '../../Api/AxiosInstance'
 
 
@@ -10,6 +10,9 @@ function Header() {
 
   const [toggle, setToggle] = useState(false)
 
+  const navigate = useNavigate()
+
+  
 
   // keeping token
   const [token, setToken] = useState("")
@@ -17,7 +20,15 @@ function Header() {
   const [userId, setUserId] = useState("")
   const [dropDown, setDropDown] = useState(false)
 
-
+const logout = ()=>{
+    sessionStorage.clear()
+    setToggle = false
+    setToken = ""
+    setDp = ""
+    setUserId = ""
+    setDropDown = false
+    navigate('/')
+  }
 
   useEffect(() => {
     if (sessionStorage.getItem("token") && sessionStorage.getItem("user")) {
@@ -88,7 +99,7 @@ function Header() {
                   dropDown &&
                   <div className="absolute right-0 z-10 mt-2 w-40 bg-white shadow rounded ring-1 ring-black/5 p-2 focus:outline-hidden">
                     <Link to={`/profile/${userId}`} className='flex items-center text-gray-600 text-sm px-3 py-2'><IoMdSettings className='me-1' /> Profile</Link>
-                    <button className='flex items-center text-gray-600 text-sm px-3 py-2'><FaPowerOff className='me-1' /> Logout</button>
+                    <button onClick={logout} className='flex items-center text-gray-600 text-sm px-3 py-2'><FaPowerOff className='me-1' /> Logout</button>
 
                   </div>
                 }
@@ -131,7 +142,7 @@ function Header() {
                   dropDown &&
                   <div className="absolute right-0 z-10 mt-2 w-40 bg-white shadow rounded ring-1 ring-black/5 p-2 focus:outline-hidden">
                     <Link to={`/profile/${userId}`} className='flex items-center text-gray-600 text-sm px-3 py-2'><IoMdSettings className='me-1' /> Profile</Link>
-                    <button className='flex items-center text-gray-600 text-sm px-3 py-2'><FaPowerOff className='me-1' /> Logout</button>
+                    <button onClick={logout} className='flex items-center text-gray-600 text-sm px-3 py-2'><FaPowerOff className='me-1' /> Logout</button>
 
                   </div>
                 }

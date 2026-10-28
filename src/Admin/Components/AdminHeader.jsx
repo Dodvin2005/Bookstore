@@ -1,7 +1,16 @@
 import React from 'react'
 import { IoLogOut } from 'react-icons/io5'
+import { useNavigate } from 'react-router-dom'
 
 function AdminHeader() {
+
+  const navigate = useNavigate()
+
+  const logout = ()=>{
+    sessionStorage.clear()
+    navigate('/')
+  }
+
   return (
 <>
 {/* Header top */}
@@ -10,7 +19,7 @@ function AdminHeader() {
     <img width={'80px'} height={'80px'}  src="https://img.icons8.com/nolan/1200/user-default.jpg" alt="" />
     <h1 className='text-2xl font-bold ms-2'>BOOKSTORE</h1>
   </div>
-  <button className="flex items-center px-3 py-2 bg-black text-white rounded border-black hover:bg-white hover:text-black">Logout <IoLogOut className='ms-2' /></button>
+  <button onClick={logout} className="flex items-center px-3 py-2 bg-black text-white rounded border-black hover:bg-white hover:text-black">Logout <IoLogOut className='ms-2' /></button>
 </div>
 {/* header marquee */}
 <div className="w-full p-3 bg-black text-white">
