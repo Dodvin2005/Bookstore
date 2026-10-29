@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
@@ -7,10 +7,13 @@ import { googleLoginAPI, loginAPI, registerAPI } from '../Services/AllApi'
 import { ToastContainer, toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from 'jwt-decode'
+import { routeContext } from '../contextAPI/RouteGuard'
 
 
 function Auth({ insideRegister }) {
   const Navigate = useNavigate()
+  const { role, setRole, authorisedUser, setAuthorisedUser } = useContext(routeContext)
+
   const [toggle, setToggle] = useState(false)
 
 
@@ -49,10 +52,13 @@ function Auth({ insideRegister }) {
       toast.success("Successfully logged in...!!!")
       sessionStorage.setItem("token", result.data.token)
       sessionStorage.setItem("user", JSON.stringify(result.data.user))
+      setAuthorisedUser(true)
       setTimeout(() => {
         if (result.data.user.role == "admin") {
+          setRole("admin")
           Navigate('/admin')
         } else {
+          setRole("user")
           Navigate('/')
         }
       }, 2500)
@@ -72,10 +78,16 @@ function Auth({ insideRegister }) {
       toast.success("Login Successfull...!!!")
       sessionStorage.setItem("token", result.data.token)
       sessionStorage.setItem("user", JSON.stringify(result.data.user))
+      setAuthorisedUser(true)
+
       setTimeout(() => {
         if (result.data.user.role == "admin") {
+          setRole("admin")
+
           Navigate('/admin')
         } else {
+          setRole("user")
+
           Navigate('/')
         }
       }, 2500)

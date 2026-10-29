@@ -72,3 +72,9 @@ export const UserListAPI = async () => {
 export const editBookStatusAPI = async (id) => {
     return await ApiService("PUT", `/books/${id}`,{})
 }
+
+
+// gemini api get book details
+export const getBookDetailsAIAPI = async (title) => {
+    return await ApiService("POST", `/books/ai`, { title })
+}

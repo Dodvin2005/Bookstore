@@ -21,45 +21,57 @@ import Pnf from './Pages/Pnf'
 // common components
 import Preloader from './Components/Preloader'
 import Footer from './Components/Footer'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import PaymentSuccess from './User/Pages/PaymentSuccess'
 import PaymentFail from './User/Pages/PaymentFail'
+import { routeContext } from './contextAPI/RouteGuard'
 
 
 
 
 function App() {
+  const { role, setRole, authorisedUser, setAuthorisedUser } = useContext(routeContext)
 
-  const [isLoading,setIsLoading] =useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
-  setTimeout(()=>{
+  setTimeout(() => {
     setIsLoading(false)
-  },1000)
+  }, 1000)
   return (
     <>
-<Routes>
-  <Route path='/' element= {isLoading? <Preloader/> : <Home/> }/>
-  <Route path='/contact' element= <Contact/>  />
-  <Route path='/books' element= <Books/>  />
-  <Route path='/login' element= <Auth/>  />
-  <Route path='/register' element= {<Auth insideRegister/> } />
+      <Routes>
+        <Route path='/' element={isLoading ? <Preloader /> : <Home />} />
+        <Route path='/contact' element=<Contact /> />
+        <Route path='/login' element=<Auth /> />
+        <Route path='/register' element={<Auth insideRegister />} />
 
 
-  <Route path='/profile/:id' element= <Profile/>  />
-  <Route path='/books/:id' element= <View/>  />
-  <Route path='*' element= <Pnf/>  />
-    <Route path='success' element= <PaymentSuccess/>  />
-  <Route path='failed' element= <PaymentFail/>  />
+        {
+          role == "user" &&
+          <>
+          <Route path='/profile/:id' element=<Profile /> />
+        <Route path='/books' element=<Books /> />
+        <Route path='/books/:id' element=<View /> />
+        <Route path='success' element=<PaymentSuccess /> />
+        <Route path='failed' element=<PaymentFail /> />
+          </>
+        }
 
 
 
-  <Route path='/admin' element= <AdminDashboard/>  />
-  <Route path='/adminresources' element= <AdminResources/>  />
-  <Route path='/adminsettings' element= <AdminSettings/>  />
+        {
+          role == "admin" &&
+          <>
+          <Route path='/admin' element=<AdminDashboard /> />
+        <Route path='/adminresources' element=<AdminResources /> />
+        <Route path='/adminsettings' element=<AdminSettings /> />
+          </>
+        }
 
+        <Route path='*' element=<Pnf /> />
 
-</Routes>
-<Footer/>
+      </Routes>
+      <Footer />
     </>
   )
 }

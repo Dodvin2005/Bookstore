@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { IoLogOut } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
+import { routeContext } from '../../contextAPI/RouteGuard'
 
 function AdminHeader() {
+    const { role, setRole, authorisedUser, setAuthorisedUser } = useContext(routeContext)
+  
 
   const navigate = useNavigate()
 
   const logout = ()=>{
     sessionStorage.clear()
+    setAuthorisedUser(false)
     navigate('/')
   }
 

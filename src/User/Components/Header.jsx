@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FaFacebook, FaInstagram, FaPowerOff } from 'react-icons/fa'
 import { FiTwitter } from 'react-icons/fi'
 import { IoMdLogIn, IoMdMenu, IoMdClose, IoMdSettings } from 'react-icons/io'
 import { Link, useNavigate } from 'react-router-dom'
 import AxiosInstance from '../../Api/AxiosInstance'
+import { routeContext } from '../../contextAPI/RouteGuard'
 
 
 function Header() {
 
   const [toggle, setToggle] = useState(false)
+  const { role, setRole, authorisedUser, setAuthorisedUser } = useContext(routeContext)
 
   const navigate = useNavigate()
 
@@ -22,6 +24,7 @@ function Header() {
 
 const logout = ()=>{
     sessionStorage.clear()
+    setAuthorisedUser(false)
     setToggle = false
     setToken = ""
     setDp = ""

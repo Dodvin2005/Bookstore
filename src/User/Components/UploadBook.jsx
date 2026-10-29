@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
 import { ToastContainer,toast} from 'react-toastify';
-import { addBookAPI } from '../../Services/AllApi';
+import { addBookAPI, getBookDetailsAIAPI } from '../../Services/AllApi';
 import useDebounce from '../../Hooks/UseDebounce';
 
 
@@ -18,10 +18,22 @@ function UploadBook() {
 
     useEffect(()=>{
         if(debounceTitleSearch){
-            console.log("API CALL");
+            console.log("GEMINI API CALL");
+            generateBookAbstractAI()
             
         }
     },[debounceTitleSearch])
+
+  const generateBookAbstractAI = async (debounceTitleSearch)=>{
+    console.log(debounceTitleSearch);
+
+    const result = await getBookDetailsAIAPI(debounceTitleSearch)
+    console.log(result);
+    setBookDetails({...bookDetails,abstract:result.data.content})
+    
+    
+  }
+
 
 
     const handleUploadImages = (e)=>{
@@ -74,6 +86,11 @@ function UploadBook() {
         }
     }
 }
+
+
+
+
+
     return (
         <div className='p-10 my-20 mx-5 bg-blue-100 rounded-2xl'>
             <h1 className="text-center text-3xl font-medium">Upload Book Details</h1>
